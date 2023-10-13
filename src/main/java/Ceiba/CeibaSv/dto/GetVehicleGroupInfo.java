@@ -23,6 +23,6 @@ public class GetVehicleGroupInfo {
         return errorCode;
     }
 
-    ////find my persent
+
 
 }

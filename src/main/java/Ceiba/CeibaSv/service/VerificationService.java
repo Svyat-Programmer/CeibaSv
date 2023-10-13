@@ -79,6 +79,10 @@ public class VerificationService {
         return deviceInfo.getBody().getData();
 
     }
+    public DeviceList get()
+    {
+        return null;
+    }
 
 //    public DeviceList getByTerId(String terid)
 //    { List<DeviceList> cars = getDeviceList();
