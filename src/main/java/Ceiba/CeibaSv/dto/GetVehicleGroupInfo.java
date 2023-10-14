@@ -22,4 +22,7 @@ public class GetVehicleGroupInfo {
 
         return errorCode;
     }
+
+
+
 }
