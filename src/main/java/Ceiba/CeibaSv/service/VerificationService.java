@@ -8,6 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -79,18 +88,47 @@ public class VerificationService {
         return deviceInfo.getBody().getData();
 
     }
+    String lastGPsUrl = "http://91.90.213.174:12056/api/v1/basic/gps/count";
+    String a1= "AAAA";
+        public LastGPSposition getLastPosition() {
 
-//    public DeviceList getByTerId(String terid)
-//    { List<DeviceList> cars = getDeviceList();
-//        for (DeviceList device : cars) {
-//            if (device.getTerid().equals(terid)) {
-//                return device;
-//            }
+            try {
+                URL url = new URL("http://91.90.213.174:12056/api/v1/basic/gps/count");
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                conn.addRequestProperty("terid",a1);
+                conn.setConnectTimeout(200);
+
+
+
+                String params = "id=10@token=token";
+                byte[] postData = params.getBytes(StandardCharsets.UTF_8);
+
+                try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                    wr.write(postData);
+                }
+
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        System.out.println(inputLine);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+
+//
 //
 //        }
-//
-//        return null;
-//    }
+
+
+
+
+
+
 
 }
 
