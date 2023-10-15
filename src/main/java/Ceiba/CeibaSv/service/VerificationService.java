@@ -4,19 +4,13 @@ import Ceiba.CeibaSv.dto.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -89,40 +83,35 @@ public class VerificationService {
 
     }
     String lastGPsUrl = "http://91.90.213.174:12056/api/v1/basic/gps/count";
-    String a1= "AAAA";
-        public LastGPSposition getLastPosition() {
+    String terid= "009900A73C";
 
-            try {
-                URL url = new URL("http://91.90.213.174:12056/api/v1/basic/gps/count");
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
+    public GpsLastResponse getLastGpsData(GpsLastRequest request) {
+        String url = "http://91.90.213.174:12056/api/v1/basic/gps/last";
 
-                conn.addRequestProperty("terid",a1);
-                conn.setConnectTimeout(200);
+        // Create the request object
+        //GpsLastRequest request = new GpsLastRequest();
+        request.setKey(token);
+        request.setTerid(new String[]{"terid"});
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create the request entity with the request body and headers
+        HttpEntity<GpsLastRequest> requestEntity = new HttpEntity<>(request, headers);
+
+        // Send the POST request and handle the response
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<GpsLastResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, GpsLastResponse.class);
+
+        // Get the response body
+        GpsLastResponse response = responseEntity.getBody();
+
+        return response;
 
 
 
-                String params = "id=10@token=token";
-                byte[] postData = params.getBytes(StandardCharsets.UTF_8);
-
-                try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                    wr.write(postData);
-                }
-
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        System.out.println(inputLine);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-
-//
-//
-//        }
+        }
 
 
 

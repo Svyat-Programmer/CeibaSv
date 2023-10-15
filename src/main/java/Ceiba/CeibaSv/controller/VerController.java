@@ -1,13 +1,9 @@
 package Ceiba.CeibaSv.controller;
 
-import Ceiba.CeibaSv.dto.DeviceList;
-import Ceiba.CeibaSv.dto.GroupData;
-import Ceiba.CeibaSv.dto.VerificationDTO;
+import Ceiba.CeibaSv.dto.*;
 import Ceiba.CeibaSv.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,5 +38,10 @@ import java.util.List;
         public List<DeviceList>getDeviceList(){
             return apiService.getDeviceList();
         }
+
+    @PostMapping("/last")
+    public GpsLastResponse getLastGpsData(@RequestBody GpsLastRequest request) {
+        return apiService.getLastGpsData(request);
+    }
     }
 
