@@ -2,8 +2,14 @@ package Ceiba.CeibaSv.service;
 
 import Ceiba.CeibaSv.dto.*;
 
+import jakarta.security.auth.message.callback.SecretKeyCallback;
+import lombok.Getter;
+import lombok.Setter;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,13 +17,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import java.util.OptionalInt;
 
 
 @Service
-public class VerificationService {
+@Slf4j
+public class VerificationService  {
     private final String apiUrl = "http://91.90.213.174:12056/api/v1/basic/key";
+
 
     String token;
     List<GroupData> a;
@@ -25,6 +37,7 @@ public class VerificationService {
     @Autowired
     private RestTemplate restTemplate;
     ResponseEntity<GetVehicleGroupInfo> vgInfo;
+
 
 
     String username = "spbcsat";
@@ -82,38 +95,65 @@ public class VerificationService {
         return deviceInfo.getBody().getData();
 
     }
-    String lastGPsUrl = "http://91.90.213.174:12056/api/v1/basic/gps/count";
-    String terid= "009900A73C";
 
-    public GpsLastResponse getLastGpsData(GpsLastRequest request) {
+
+
+
+//    public GpsLastResponse getLastGpsData() {
+//        String url = "http://91.90.213.174:12056/api/v1/basic/gps/last";
+//        GpsLastRequest request = new GpsLastRequest(HttpHeade
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<GpsLastRequest> requestEntity = new HttpEntity<>(request,headers);
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<GpsLastResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, GpsLastResponse.class);
+//        GpsLastResponse response = responseEntity.getBody();
+//
+//        return response;
+
+
+
+
+       // }
+
+
+
+
+
+
+
         String url = "http://91.90.213.174:12056/api/v1/basic/gps/last";
+                 // String apiKey=getKey(username,password);
+                  String [] terid={"0099031743"};
+       public GpsLastResponse getLastGpsData(String[] terid){
 
-        // Create the request object
-        //GpsLastRequest request = new GpsLastRequest();
-        request.setKey(token);
-        request.setTerid(new String[]{"terid"});
+           token = getKey(username, password);
 
-        // Set up the HTTP headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+           HttpHeaders headers = new HttpHeaders();
+           headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//           Map<String , String> requestBody = new HashMap<>();
+//           requestBody.put("key", token);
+//           requestBody.put("terid", terid);
+           GpsLastRequest requestBody = new GpsLastRequest(token);
+           requestBody.setTerid(terid);
 
-        // Create the request entity with the request body and headers
-        HttpEntity<GpsLastRequest> requestEntity = new HttpEntity<>(request, headers);
+           HttpEntity<GpsLastRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+           log.info(requestEntity.toString());
+            restTemplate=new RestTemplate();
+           ResponseEntity<GpsLastResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, GpsLastResponse.class);
+           GpsLastResponse GPSdata = responseEntity.getBody();
+           log.info(responseEntity.toString());
+            log.info(responseEntity.getBody().toString());
+        return GPSdata;
 
-        // Send the POST request and handle the response
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<GpsLastResponse> responseEntity = restTemplate.postForEntity(url, requestEntity, GpsLastResponse.class);
+       }
+    public OptionalInt takeSpeed(){
 
-        // Get the response body
-        GpsLastResponse response = responseEntity.getBody();
-
-        return response;
-
-
-
-        }
+        return getLastGpsData(terid).getData().stream().mapToInt(c->c.getAltitude()).max();
 
 
+    }
 
 
 

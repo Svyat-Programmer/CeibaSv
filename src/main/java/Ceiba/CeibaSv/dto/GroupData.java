@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class GroupData {
-    private int groupid;
-    private String groupname;
-    private int groupfatherid;
+  public int groupid;
+    public String groupname;
+    public int groupfatherid;
 
     public int getGroupid() {
         return groupid;

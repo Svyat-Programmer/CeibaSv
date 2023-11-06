@@ -1,5 +1,6 @@
 package Ceiba.CeibaSv.dto;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class LastGPSposition {
 
     String terid; //": "AE99873120",
